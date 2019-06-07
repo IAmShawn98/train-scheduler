@@ -1,0 +1,11 @@
+/* Head Class Modifications */
+
+.jumbotron {
+    background-color: #7f462c !important;
+    height: 210px !important;
+    color: #ffffff;
+}
+
+h1 {
+    font-size: 300%;
+}
