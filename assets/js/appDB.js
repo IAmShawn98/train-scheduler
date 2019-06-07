@@ -1,3 +1,4 @@
+
 // Firebase API Config
 var firebaseConfig = {
     apiKey: "AIzaSyDmyhX5D3J_ACq2YtrXr7km7gyzgIA7f3Y", // Come get me, I dare you! (Prepared For Safety Emails from Google? Check!) 
@@ -15,3 +16,27 @@ firebase.initializeApp(firebaseConfig);
 // Reference to the root of the database.
 var schedulerDB = firebase.database();
 
+// When the user clicks on the submit button, process the user data.
+$("#btnSubmit").on("click", function (e) {
+    // Prevents the page from reloading.
+    e.preventDefault();
+
+    // DEFINED DOM 'FORM' ELEMENTS.
+    var sName = $("#sName").val().trim();
+    var sDestination = $("#sDestination").val().trim();
+    var sFirstTrainTime = $("#sFirstTrainTime").val().trim();
+    var sFrequency = $("#sFrequency").val().trim();
+
+    // Push User Data to Firebase.
+    schedulerDB.ref().push({
+        sName,
+        sDestination,
+        sFirstTrainTime,
+        sFrequency
+    })
+    // Since the data is now saved, clear the values of the form input fields.
+    $("#sName").val("");
+    $("#sDestination").val("");
+    $("#sFirstTrainTime").val("");
+    $("#sFrequency").val("");
+});
