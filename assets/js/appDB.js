@@ -39,4 +39,12 @@ $("#btnSubmit").on("click", function (e) {
     $("#sDestination").val("");
     $("#sFirstTrainTime").val("");
     $("#sFrequency").val("");
+
+    // Let the user know that their data was successfully sent to the database.
+    $("#dataSentSuccess").show();
+
+    // Hide Success Alert.
+    setTimeout(function () {
+        $("#dataSentSuccess").hide();
+    }, 3000)
 });
