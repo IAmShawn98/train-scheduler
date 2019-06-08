@@ -27,24 +27,50 @@ $("#btnSubmit").on("click", function (e) {
     var sFirstTrainTime = $("#sFirstTrainTime").val().trim();
     var sFrequency = $("#sFrequency").val().trim();
 
-    // Push User Data to Firebase.
-    schedulerDB.ref().push({
-        sName,
-        sDestination,
-        sFirstTrainTime,
-        sFrequency
-    })
-    // Since the data is now saved, clear the values of the form input fields.
-    $("#sName").val("");
-    $("#sDestination").val("");
-    $("#sFirstTrainTime").val("");
-    $("#sFrequency").val("");
+    // Validate that the data being sent is legit.
+    if (sName, sDestination, sFirstTrainTime, sFrequency === "") {
+        $("#dataSentEmpty").show();
+    } else {
+        // If the user previously entered invalid data, remove last error message.
+        $("#dataSentEmpty").hide();
+        // Push User Data to Firebase.
+        schedulerDB.ref().push({
+            sName,
+            sDestination,
+            sFirstTrainTime,
+            sFrequency
+        })
+        // Since the data is now saved, clear the values of the form input fields.
+        $("#sName").val("");
+        $("#sDestination").val("");
+        $("#sFirstTrainTime").val("");
+        $("#sFrequency").val("");
 
-    // Let the user know that their data was successfully sent to the database.
-    $("#dataSentSuccess").show();
+        // Let the user know that their data was successfully sent to the database.
+        $("#dataSentSuccess").show();
 
-    // Hide Success Alert.
-    setTimeout(function () {
-        $("#dataSentSuccess").hide();
-    }, 3000)
+        // Hide Success Alert.
+        setTimeout(function () {
+            $("#dataSentSuccess").hide();
+        }, 3000)
+    }
+
+});
+
+// Build out our HTML table body data.
+schedulerDB.ref().once('value', function (snapshot) {
+    if (snapshot.exists()) {
+        var content = '';
+        snapshot.forEach(function (data) {
+            var val = data.val();
+            content += '<tr>';
+            content += '<td>' + val.sName + '</td>';
+            content += '<td>' + val.sDestination + '</td>';
+            content += '<td>' + val.sFirstTrainTime + '</td>';
+            content += '<td>' + val.sFrequency + '</td>';
+            content += '<td>' + val.sFrequency + '</td>';
+            content += '</tr>';
+        });
+        $('#trainDataPopulation').append(content);
+    }
 });

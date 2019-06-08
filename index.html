@@ -34,8 +34,11 @@
         <div style="display: none;" class="alert alert-success" id="dataSentSuccess" role="alert">
             <i class="fa fa-check-circle" aria-hidden="true"></i> Schedule Added Successfully!
         </div>
+        <!-- Alert the user that the data they entered was invalid -->
+        <div style="display: none;" class="alert alert-danger" id="dataSentEmpty" role="alert">
+            <i class="fa fa-exclamation-circle"></i> Make sure you've filled out the entire form to continue.
+        </div>
     </div>
-
     <!-- Main Content (Card; Page Body) -->
     <main class="container">
         <!-- Card Head -->
@@ -58,27 +61,8 @@
                         </tr>
                     </thead>
                     <!-- Table Body Content -->
-                    <tbody>
-                        <!-- <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td colspan="2">Larry the Bird</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                            <td colspan="2">Larry the Bird</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>@twitter</td>
-                            <td colspan="2">Larry the Bird</td>
-                        </tr> -->
+                    <tbody id="trainDataPopulation">
+                        <!-- Train Data Populates Here! -->
                     </tbody>
                 </table>
             </div>
@@ -94,22 +78,24 @@
                     <!-- Train Name Field -->
                     <div class="form-group">
                         <label class="font-weight-bold">Train Name</label>
-                        <input type="text" name="sName" id="sName" class="form-control">
+                        <input type="text" autocomplete="off" name="sName" id="sName" class="form-control">
                     </div>
                     <!-- Train Destination Field -->
                     <div class="form-group">
                         <label class="font-weight-bold">Destination</label>
-                        <input type="text" name="sDestination" id="sDestination" class="form-control">
+                        <input type="text" autocomplete="off" name="sDestination" id="sDestination"
+                            class="form-control">
                     </div>
                     <!-- First Train Time -->
                     <div class="form-group">
                         <label class="font-weight-bold">First Train Time (HH:mm - military time)</label>
-                        <input type="text" name="sFirstTrainTime" id="sFirstTrainTime" class="form-control">
+                        <input type="text" autocomplete="off" name="sFirstTrainTime" id="sFirstTrainTime"
+                            class="form-control">
                     </div>
                     <!-- Frequency (min) -->
                     <div class="form-group">
                         <label class="font-weight-bold">Frequency (min)</label>
-                        <input type="text" name="sFrequency" id="sFrequency" class="form-control">
+                        <input type="text" autocomplete="off" name="sFrequency" id="sFrequency" class="form-control">
                     </div>
                     <!-- Submit Button -->
                     <button type="submit" id="btnSubmit" class="btn btn-primary">Submit</button>
