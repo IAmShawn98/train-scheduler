@@ -29,6 +29,7 @@
         <div class="jumbotron jumbotron-fluid text-center">
             <h1>Anytime is Train Time</h1>
             <p class="lead">Choo Choo. Chee Chee.</p>
+            <p id="sTime">Retriving Time....</p>
         </div>
         <!-- Alert the user that the data they entered was sent to the database -->
         <div style="display: none;" class="alert alert-success" id="dataSentSuccess" role="alert">
@@ -48,8 +49,9 @@
             </div>
             <!-- Card Body (Train Schedule) -->
             <div class="card-body">
+
                 <!-- Schedule Table -->
-                <table class="table table-hover">
+                <table class="table table-hover text-center">
                     <thead>
                         <!-- Table Head Titles -->
                         <tr>
@@ -82,19 +84,18 @@
                     </div>
                     <!-- Train Destination Field -->
                     <div class="form-group">
-                        <label class="font-weight-bold">Destination</label>
+                        <label class="font-weight-bold">Train Destination</label>
                         <input type="text" autocomplete="off" name="sDestination" id="sDestination"
                             class="form-control">
                     </div>
-                    <!-- First Train Time -->
+                    <!-- Current Time -->
                     <div class="form-group">
-                        <label class="font-weight-bold">First Train Time (HH:mm - military time)</label>
-                        <input type="text" autocomplete="off" name="sFirstTrainTime" id="sFirstTrainTime"
-                            class="form-control">
+                        <label class="font-weight-bold">First Time (HH:mm)</label>
+                        <input type="text" autocomplete="off" name="sFirstTime" id="sFirstTime" class="form-control">
                     </div>
                     <!-- Frequency (min) -->
                     <div class="form-group">
-                        <label class="font-weight-bold">Frequency (min)</label>
+                        <label class="font-weight-bold">Train Frequency (min)</label>
                         <input type="text" autocomplete="off" name="sFrequency" id="sFrequency" class="form-control">
                     </div>
                     <!-- Submit Button -->

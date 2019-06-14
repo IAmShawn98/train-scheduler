@@ -15,6 +15,19 @@ firebase.initializeApp(firebaseConfig);
 // Reference to the root of the database.
 var schedulerDB = firebase.database();
 
+// Defined Variables.
+function updateTime() {
+    // Moment time display.
+    var sTime = document.getElementById("sTime");
+    // Get and store the current time.
+    var currentTime = moment().format("hh:mm A");
+    // Populate the time display.
+    sTime.textContent = currentTime;
+}
+
+// Set updater for our live time.
+setInterval(updateTime, 0);
+
 // DATA SUBMISSION FUNCTION.
 
 // When the user clicks on the submit button, process the user data.
@@ -25,11 +38,14 @@ $("#btnSubmit").on("click", function (e) {
     // Defined DOM form elements.
     var sName = $("#sName").val().trim();
     var sDestination = $("#sDestination").val().trim();
-    var sFirstTrainTime = $("#sFirstTrainTime").val().trim();
+    var sFirstTime = $("#sFirstTime").val().trim();
     var sFrequency = $("#sFrequency").val().trim();
 
+
+
+
     // Validate that the data being sent is legit.
-    if (sName, sDestination, sFirstTrainTime, sFrequency === "") {
+    if (sName, sDestination, sFirstTime, sFrequency === "") {
         $("#dataSentEmpty").show();
     } else {
         // If the user previously entered invalid data, remove last error message.
@@ -39,13 +55,13 @@ $("#btnSubmit").on("click", function (e) {
         db.set({
             sName,
             sDestination,
-            sFirstTrainTime,
+            sFirstTime,
             sFrequency
         });
         // Since the data is now saved, clear the values of the form input fields.
         $("#sName").val("");
         $("#sDestination").val("");
-        $("#sFirstTrainTime").val("");
+        $("#sFirstTime").val("");
         $("#sFrequency").val("");
 
         // Let the user know that their data was successfully sent to the database.
@@ -58,44 +74,44 @@ $("#btnSubmit").on("click", function (e) {
     }
 });
 
-// POPULATE TABLE BODY.
-
 // Build out our HTML table body data.
 schedulerDB.ref().on('value', function (snapshot) {
     // Variable containing our JS-built table.
     var content = '';
-    // We set a random time to show the moment js library what time looks like.
-    var randomTime = "13:00";
-    // We pass in the type of time format we want to built (A = AM/PM).
-    var randomDateFormat = "HH:mm A";
-    //  Pass in our two time format variables so the moment converter knows what to do next.
-    var convertedDate = moment(randomTime, randomDateFormat);
-    // Hold the new nicely formatted train arrival time.
-    console.log(convertedDate.add(20, "minutes").format(randomDateFormat));
 
     // Loop through our data and build our table.
-    snapshot.forEach(function (data) {
-        var val = data.val();
+    snapshot.forEach(function (childSnapshot) {
+        // Holds a childs unique key.
+        var key = childSnapshot.key;
+        // Holds the value of our DB children.
+        var val = childSnapshot.val();
+
+        var currentTime = moment().format("hh:mm");
+
+        // Subtract a year to make sure time is accurate.
+        var startTimeConverted = moment(val.sFirstTime, "hh:mm").add(sFrequency, "minutes");
+        // Get the difference between the first time given and 
+        var timeDiff = moment().add(moment(startTimeConverted), "minutes");
+        var timeRemain = timeDiff % val.sFrequency;
+        var minToArrival = val.sFrequency % timeRemain;
+        var nextTrain = moment().add(minToArrival, "minutes");
+
+        // Format our data into a table.
         content += '<tr>';
         // Train Name.
         content += '<td>' + val.sName + '</td>';
         // Train Destination
         content += '<td>' + val.sDestination + '</td>';
-        // How often the train frequents a stop for this location.
+        // How often the train frequents a stop.
         content += '<td>' + val.sFrequency + '</td>';
-        // Train arrival time.
-        content += '<td>' + val.sFirstTrainTime + '</td>';
+        // First Time
+        content += '<td>' + nextTrain + '</td>';
         // How many minutes away the train is from it's stop.
-        content += '<td>' + val.sFrequency * val.sFrequency + '</td>';
+        content += '<td>PH</td>';
         content += '</tr>';
     });
 
     // Populate table with built data.
     $('#trainDataPopulation').append(content);
-});
 
-// Experimental - May use this for the process of updating / removing data.
-// function updateField() {
-//     var updateNow = prompt("Rename sName!");
-//     schedulerDB.ref("-LgovWZiLGHiF8WWLrNM").update({ sName: "NewName!" });
-// }
+});
