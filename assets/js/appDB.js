@@ -20,7 +20,7 @@ function updateTime() {
     // Moment time display.
     var sTime = document.getElementById("sTime");
     // Get and store the current time.
-    var currentTime = moment().format("hh:mm A");
+    var currentTime = moment().format("h:mm A");
     // Populate the time display.
     sTime.textContent = currentTime;
 }
@@ -38,11 +38,8 @@ $("#btnSubmit").on("click", function (e) {
     // Defined DOM form elements.
     var sName = $("#sName").val().trim();
     var sDestination = $("#sDestination").val().trim();
-    var sFirstTime = $("#sFirstTime").val().trim();
+    var sFirstTime = moment($("#sFirstTime").val().trim(), "HH:mm").subtract(10, "years").format("X");
     var sFrequency = $("#sFrequency").val().trim();
-
-
-
 
     // Validate that the data being sent is legit.
     if (sName, sDestination, sFirstTime, sFrequency === "") {
@@ -74,44 +71,57 @@ $("#btnSubmit").on("click", function (e) {
     }
 });
 
-// Build out our HTML table body data.
-schedulerDB.ref().on('value', function (snapshot) {
-    // Variable containing our JS-built table.
+// Convert Data Into A Readable HTML Table.
+schedulerDB.ref().on("child_added", function (snapshot) {
+    // Defined Data Snapshots.
+    var sName = snapshot.val().sName;
+    var sDestination = snapshot.val().sDestination;
+    var sFrequency = snapshot.val().sFrequency;
+    var sFirstTime = snapshot.val().sFirstTime;
+
+    // Get Unique Keys.
+    var key = snapshot.key;
+
+    // Remainder.
+    var remainder = moment().diff(moment.unix(sFirstTime), "minutes") % sFrequency;
+    // Minutes Until Next Train Arrival.
+    var minutes = sFrequency - remainder;
+    // Arrival Time.
+    var arrival = moment().add(minutes, "m").format("hh:mm A");
+
+    // Append Captured Data Snapshots and Populate DataTable.
     var content = '';
 
-    // Loop through our data and build our table.
-    snapshot.forEach(function (childSnapshot) {
-        // Holds a childs unique key.
-        var key = childSnapshot.key;
-        // Holds the value of our DB children.
-        var val = childSnapshot.val();
+    content += '<tr>';
+    // Train Name.
+    content += '<td>' + sName + '</td>';
+    // Train Destination.
+    content += '<td>' + sDestination + '</td>';
+    // How often the train frequents a stop.
+    content += '<td>' + sFrequency + '</td>';
+    // First Time.
+    content += '<td>' + arrival + '</td>';
+    // How many minutes away the train is from it's stop.
+    content += '<td>' + minutes + '</td>';
+    // Table Actions.
+    content += '<td><i class="fa fa-trash text-danger" id="delRow" aria-hidden="true"></i></td>';
+    content += '</tr>';
 
-        var currentTime = moment().format("hh:mm");
-
-        // Subtract a year to make sure time is accurate.
-        var startTimeConverted = moment(val.sFirstTime, "hh:mm").add(sFrequency, "minutes");
-        // Get the difference between the first time given and 
-        var timeDiff = moment().add(moment(startTimeConverted), "minutes");
-        var timeRemain = timeDiff % val.sFrequency;
-        var minToArrival = val.sFrequency % timeRemain;
-        var nextTrain = moment().add(minToArrival, "minutes");
-
-        // Format our data into a table.
-        content += '<tr>';
-        // Train Name.
-        content += '<td>' + val.sName + '</td>';
-        // Train Destination
-        content += '<td>' + val.sDestination + '</td>';
-        // How often the train frequents a stop.
-        content += '<td>' + val.sFrequency + '</td>';
-        // First Time
-        content += '<td>' + nextTrain + '</td>';
-        // How many minutes away the train is from it's stop.
-        content += '<td>PH</td>';
-        content += '</tr>';
-    });
-
-    // Populate table with built data.
+    // Append Data to Table.
     $('#trainDataPopulation').append(content);
 
+    // Delete Single Table Rows.
+    $(".fa-trash").on('click', function () {
+        // Loop through unique keys.
+        for (var i = 0; i < key.length;) {
+            // Delete Key In Row the User Clicked.
+            $(this).parents("tr").remove();
+            schedulerDB.ref().child(key).remove();
+            // alert("Removed " + key);
+            // Break Loop.
+            if (key === remove()) {
+                break;
+            };
+        }
+    });
 });
